@@ -1,0 +1,6 @@
+1. Show login message in index only if user is not logged in.
+2. Make a log out page.
+3. Make a dashboard.
+4. Implement charts.
+5. Consider moving the navbar to the side for cleaner looks.
+6. Improve the aesthetics of the index page.
