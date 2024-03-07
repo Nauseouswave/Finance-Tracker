@@ -8,6 +8,7 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const port = process.env.PORT || 3000;
 
 const app = express();
 
@@ -65,9 +66,9 @@ app.get('/', function(req, res) {
 });
 
 
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
-});
+app.listen(port, function() {
+    console.log('App is running on http://localhost:' + port);
+  });
 
 const expenseSchema = new mongoose.Schema({
     name: String,
