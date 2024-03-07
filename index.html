@@ -2,29 +2,87 @@
 <html>
 <head>
     <title>Finance Tracker</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #333;
+            color: #fff;
+        }
+        .navbar {
+            background-color: #444;
+        }
+        .jumbotron {
+            background-color: #444;
+        }
+        .btn-primary {
+            background-color: #008000;
+            border-color: #008000;
+        }
+        .btn-secondary {
+            background-color: #006400;
+            border-color: #006400;
+        }
+        .scroll-animate {
+            opacity: 0;
+            transition: opacity 2s;
+        }
+        .animate {
+            animation: slidein 2s forwards;
+        }
+        @keyframes slidein {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-    <div class="center-div">
-    <h1>Finance Tracker</h1>
-    <form action="/expenses" method="POST">
-        <input type="text" name="name" placeholder="Purchase">
-        <select name="type">
-            <option value="" selected disabled>Select Category</option>
-            <option value="Groceries/Food">Groceries/Food</option>
-            <option value="Housing">Housing</option>
-            <option value="Utilities">Utilities</option>
-            <option value="Transportation">Transportation</option>
-            <option value="Health">Health</option>
-            <option value="Personal">Personal</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Dining Out">Dining Out</option>
-            <option value="Education">Education</option>
-            <option value="Savings/Investments">Savings/Investments</option>
-        </select>
-        <input type="number" name="amount" placeholder="Amount (KWD)">
-        <input type="submit">
-    </form>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Finance Tracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/expenses">Expenses</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="jumbotron text-center">
+        <h1 class="display-4">Welcome to Finance Tracker!</h1>
+        <p class="lead">Track your expenses and manage your finances with ease.</p>
+        <hr class="my-4">
+        <p>Start by logging in or registering a new account.</p>
+        <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
+        <a class="btn btn-secondary btn-lg" href="/register" role="button">Register</a>
     </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 scroll-animate">
+                <img src="https://source.unsplash.com/600x400/?cash" class="img-fluid" alt="Cash Image">
+            </div>
+            <div class="col-md-6 scroll-animate">
+                <img src="https://source.unsplash.com/600x400/?dashboard" class="img-fluid" alt="Dashboard Image">
+            </div>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', (event) => {
+            let elements = document.querySelectorAll('.scroll-animate');
+            elements.forEach((element) => {
+                element.classList.add('animate');
+            });
+        });
+    </script>
 </body>
 </html>
