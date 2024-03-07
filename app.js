@@ -2,10 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const bcrypt = require('bcryptjs');
-const app = express();
 const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const passport = require('passport');
+
+const app = express();
 
 app.use(session({
     secret: 'some secret',
@@ -16,6 +18,9 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
@@ -149,4 +154,18 @@ app.put('/expenses/:id', async (req, res) => {
         console.error(err);
         res.status(500).send('Server Error');
     }
+});
+
+app.get('/profile', function(req, res) {
+    if (!req.session.userId) {
+        return res.redirect('/login');
+    }
+    User.findById(req.session.userId)
+        .then(user => {
+            res.render('profile', { user: user });
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('/');
+        });
 });

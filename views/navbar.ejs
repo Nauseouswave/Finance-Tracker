@@ -1,0 +1,63 @@
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #444;
+        }
+
+        .navbar {
+            background-color: #303030;
+            position: fixed; /* Fix position */
+            top: 0; /* Position at the top */
+            width: 100%; /* Full width */
+            z-index: 1000; /* Stay on top of other elements */
+        }
+
+        .navbar a {
+            color: #fff; /* White text */
+            transition: color 0.3s; /* Transition on hover (color) */
+        }
+
+        .navbar a:hover {
+            color: #ccc; /* Light gray text on hover */
+        }
+
+        .navbar-brand {
+            font-size: 1.5em; /* Larger brand text */
+        }
+
+        .navbar-toggler {
+            border-color: #fff; /* White border for the toggler */
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); /* White toggler icon */
+        }
+    </style>
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">Finance Tracker</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/register">Register</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/expenses">Expenses</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Profile</a>
+            </li>
+        </ul>
+    </div>
+</nav>
