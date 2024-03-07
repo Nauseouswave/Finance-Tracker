@@ -1,0 +1,42 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<%- include('navbar.ejs', {currentPage: currentPage}) %>
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-picture-container" onclick="showUploadForm()">
+            <img class="profile-picture" src="<%= user.profilePicture %>" alt="Profile Picture">
+            <h1>Welcome, <%= user.name %>!</h1>
+            <img class="edit-icon" src="/images/pencil.webp" alt="Edit">
+        </div>
+    </div>
+    <p>Email: <%= user.email %></p>
+    <p>Joined on: 
+        <% 
+            let date = new Date(user.joinDate);
+            let formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}`;
+        %>
+        <%= formattedDate %>
+    </p>    <div id="uploadForm" style="display: none;">
+        <form action="/profile/picture" method="POST" enctype="multipart/form-data">
+            <label for="profilePicture" class="custom-file-upload">
+                <input type="file" id="profilePicture" name="profilePicture" required>
+                Choose File
+            </label>
+            <span id="fileName"></span>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+</div>
+
+<script>
+    function showUploadForm() {
+        const uploadForm = document.getElementById('uploadForm');
+        uploadForm.style.display = uploadForm.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('profilePicture').addEventListener('change', function() {
+        document.getElementById('fileName').textContent = 'Selected File: ' + this.files[0].name;
+    });
+</script>

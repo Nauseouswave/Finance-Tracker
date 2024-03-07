@@ -6,6 +6,8 @@ const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const app = express();
 
@@ -30,13 +32,38 @@ mongoose.connect('mongodb://localhost/finance_tracker');
 const userSchema = new mongoose.Schema({
     username: String,
     password: String,
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    joinDate: {
+        type: Date,
+        default: Date.now
+    },
+    profilePicture: {
+        type: String,
+        default: '/images/default-profile.jpg'
+    }
 });
 
 const User = mongoose.model('User', userSchema);
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+app.get('/', function(req, res) {
+    User.findById(req.session.userId)
+        .then(user => {
+            console.log(user);
+            res.render('index', { user: user, currentPage: 'home'});
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('/');
+        });
 });
+
 
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
@@ -60,6 +87,9 @@ app.post('/register', async (req, res) => {
         const user = new User({
             username: req.body.username,
             password: hashedPassword,
+            name: req.body.name,
+            email: req.body.email,
+            joinDate: Date.now(),
         });
         await user.save();
         req.session.userId = user._id;
@@ -105,7 +135,8 @@ app.get('/expenses', async (req, res) => {
 
     try {
         const expenses = await Expense.find({ userId: req.session.userId });
-        res.render('expenses', { expenses: expenses });
+        const user = await User.findById(req.session.userId);
+        res.render('expenses', {user: user, expenses: expenses, currentPage: 'expenses' });
     } catch (err) {
         res.status(500).send(err);
     }
@@ -162,10 +193,24 @@ app.get('/profile', function(req, res) {
     }
     User.findById(req.session.userId)
         .then(user => {
-            res.render('profile', { user: user });
+            res.render('profile', { user: user, currentPage: 'profile'});
         })
         .catch(err => {
             console.log(err);
             res.redirect('/');
         });
 });
+
+app.post('/profile/picture', upload.single('profilePicture'), async (req, res) => {
+    try {
+        const user = await User.findById(req.session.userId);
+        user.profilePicture = req.file.path;
+        await user.save();
+        res.redirect('/profile');
+    } catch {
+        res.redirect('/profile');
+    }
+});
+
+app.use('/uploads', express.static('uploads'));
+app.use('/images', express.static('images'));
