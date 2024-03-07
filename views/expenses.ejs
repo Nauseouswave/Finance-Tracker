@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expenses</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="center-div">
+        <h1>Expenses</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Amount (KWD)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% expenses.forEach(expense => { %>
+                    <tr data-id="<%= expense._id %>">
+                        <td><%= expense.name %></td>
+                        <td><%= expense.type %></td>
+                        <td>KWD <%= expense.amount %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <div id="buttonContainer">
+            <button id="editButton" style="display: none;">Edit</button>
+            <button id="deleteButton" style="display: none;">Delete</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedRow;
+
+        document.querySelectorAll('tr[data-id]').forEach(row => {
+            row.addEventListener('click', () => {
+                selectedRow = row;
+                document.getElementById('editButton').style.display = 'block';
+                document.getElementById('deleteButton').style.display = 'block';
+            });
+        });
+
+        document.getElementById('editButton').addEventListener('click', () => {
+            const selectedId = selectedRow.getAttribute('data-id');
+            window.location.href = '/expenses/' + selectedId + '/edit';
+        });
+
+        document.getElementById('deleteButton').addEventListener('click', () => {
+            const selectedId = selectedRow.getAttribute('data-id');
+            fetch('/expenses/' + selectedId, {
+                method: 'DELETE',
+            }).then(response => {
+                if (response.ok) {
+                    selectedRow.remove();
+                    document.getElementById('editButton').style.display = 'none';
+                    document.getElementById('deleteButton').style.display = 'none';
+                } else {
+                    throw new Error('Failed to delete expense');
+                }
+            }).catch(error => {
+                console.error(error);
+            });
+
+            location.reload();
+        });
+    </script>
+    
+    
+</body>
+</html>

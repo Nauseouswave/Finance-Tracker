@@ -1,0 +1,140 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0B1416;
+    color: #fff;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-div {
+    background-color: #353535;
+    width: 40%;
+    min-height: 50%;
+    max-height: 90%;
+    margin: 0 auto;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 10px;
+    position: relative;
+}
+
+.center-div h1 {
+    text-align: center;
+    color: #00ff15;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+header {
+    background: #1a1a1a;
+    color: white;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #e8491d 3px solid;
+}
+
+header h1 {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 36px;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    margin-bottom: 50px;
+    border-collapse: collapse;
+    background-color: #727272;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #50b3a2;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+table th {
+    background-color: #00ff15;
+    color: rgb(0, 0, 0);
+}
+
+table tr:nth-child(even) {
+    background-color: #727272;
+}
+
+.container h1 {
+    text-align: center;
+    color: #50b3a2;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+  
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form input, form input[type="submit"], select {
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 1em;
+}
+
+form input[type="submit"] {
+    background-color: #50b3a2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border-radius: 5px;
+}
+  
+form input[type="submit"]:hover {
+    background-color: #4a9188;
+}
+
+input, select, button {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border: gray 2px solid;
+    padding: 2px;
+    font-size: 1.2em;
+    border-radius: 25px;
+}
+
+input::placeholder {
+    color: #777;
+}
+
+#buttonContainer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    gap: 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+#editButton, #deleteButton {
+    display: none;
+    width: 100px;
+}
+
+#editButton:hover, #deleteButton:hover {
+    background-color: #00ff15;
+    transition: linear 0.2s;
+}
