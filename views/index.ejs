@@ -79,9 +79,9 @@
                 <a class="btn btn-secondary btn-lg" href="/register" role="button">Register</a>
                 <% } else { %>
                     <p>Welcome, <%= user.username %>!</p>
-                    <img class="profile-picture" src="<%= user.profilePicture %>" alt="User's profile picture">
-                    <% } %><br>
-                        <a href="/expenses" class="btn btn-primary mt-3">Go to Expenses</a>
+                    <img class="profile-picture" src="<%= user.profilePicture %>" alt="User's profile picture"><br>
+                    <a href="/expenses" class="btn btn-primary mt-3">Go to Expenses</a>
+                    <% } %>
         </div>
         <div class="container">
             <div class="row">
