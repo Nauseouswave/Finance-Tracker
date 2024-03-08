@@ -1,67 +1,103 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Finance Tracker</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #333;
-            color: #fff;
+            background-color: #333 !important;
+            color: #fff !important;
         }
+
         .navbar {
             background-color: #444;
         }
+
         .jumbotron {
             background-color: #747474 !important;
         }
+
         .btn-primary {
-            background-color: #008000;
-            border-color: #008000;
+            background-color: #008000 !important;
+            border-color: #008000 !important;
         }
+
         .btn-secondary {
-            background-color: #006400;
-            border-color: #006400;
+            background-color: #006400 !important;
+            border-color: #006400 !important;
         }
+
         .scroll-animate {
             opacity: 0;
             transition: opacity 2s;
         }
+
         .animate {
             animation: slidein 2s forwards;
         }
+
         @keyframes slidein {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .jumbotron p {
+            font-size: 1.5em;
+            /* Increase the font size */
+            font-weight: bold;
+            /* Make the text bold */
+        }
+
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #fff;
         }
     </style>
 </head>
+
 <body>
     <%- include('navbar.ejs', {currentPage: currentPage}) %>
-    <div class="jumbotron text-center">
-        <h1 class="display-4">Welcome to Finance Tracker!</h1>
-        <p class="lead">Track your expenses and manage your finances with ease.</p>
-        <hr class="my-4">
-        <p>Start by logging in or registering a new account.</p>
-        <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
-        <a class="btn btn-secondary btn-lg" href="/register" role="button">Register</a>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 scroll-animate">
-                <img src="https://source.unsplash.com/600x400/?cash" class="img-fluid" alt="Cash Image">
-            </div>
-            <div class="col-md-6 scroll-animate">
-                <img src="https://source.unsplash.com/600x400/?dashboard" class="img-fluid" alt="Dashboard Image">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Welcome to Finance Tracker!</h1>
+            <p class="lead">Track your expenses and manage your finances with ease.</p>
+            <hr class="my-4">
+            <% if (!user) { %>
+                <p>Start by logging in or registering a new account.</p>
+                <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
+                <a class="btn btn-secondary btn-lg" href="/register" role="button">Register</a>
+                <% } else { %>
+                    <p>Welcome, <%= user.username %>!</p>
+                    <img class="profile-picture" src="<%= user.profilePicture %>" alt="User's profile picture">
+                    <% } %>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 scroll-animate">
+                    <img src="https://source.unsplash.com/600x400/?cash" class="img-fluid" alt="Cash Image">
+                </div>
+                <div class="col-md-6 scroll-animate">
+                    <img src="https://source.unsplash.com/600x400/?dashboard" class="img-fluid" alt="Dashboard Image">
+                </div>
             </div>
         </div>
-    </div>
-    <script>
-        window.addEventListener('load', (event) => {
-            let elements = document.querySelectorAll('.scroll-animate');
-            elements.forEach((element) => {
-                element.classList.add('animate');
+        <script>
+            window.addEventListener('load', (event) => {
+                let elements = document.querySelectorAll('.scroll-animate');
+                elements.forEach((element) => {
+                    element.classList.add('animate');
+                });
             });
-        });
-    </script>
+        </script>
 </body>
+
 </html>

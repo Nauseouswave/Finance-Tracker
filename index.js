@@ -53,11 +53,11 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     User.findById(req.session.userId)
         .then(user => {
             console.log(user);
-            res.render('index', { user: user, currentPage: 'home'});
+            res.render('index', { user: user, currentPage: 'home' });
         })
         .catch(err => {
             console.log(err);
@@ -66,9 +66,9 @@ app.get('/', function(req, res) {
 });
 
 
-app.listen(port, function() {
+app.listen(port, function () {
     console.log('App is running on http://localhost:' + port);
-  });
+});
 
 const expenseSchema = new mongoose.Schema({
     name: String,
@@ -103,7 +103,7 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (user == null) {
-        return res.render('login', { error: 'Cannot find user' });
+        return res.render('login', { error: 'Cannot find user', currentPage: 'login', user: null });
     }
 
     try {
@@ -111,7 +111,7 @@ app.post('/login', async (req, res) => {
             req.session.userId = user._id;
             res.redirect('/expenses');
         } else {
-            res.render('login', { error: 'Incorrect password' });
+            res.render('login', { error: 'Incorrect password', currentPage: 'login', user: null });
         }
     } catch {
         res.status(500).send();
@@ -125,7 +125,7 @@ app.get('/register', (req, res) => {
 app.get('/login', (req, res) => {
     const message = req.session.message;
     req.session.message = null; // Clear the message
-    res.render('login', { message: message });
+    res.render('login', { message: message, currentPage: 'login', user: null });
 });
 
 app.get('/expenses', async (req, res) => {
@@ -137,7 +137,7 @@ app.get('/expenses', async (req, res) => {
     try {
         const expenses = await Expense.find({ userId: req.session.userId });
         const user = await User.findById(req.session.userId);
-        res.render('expenses', {user: user, expenses: expenses, currentPage: 'expenses' });
+        res.render('expenses', { user: user, expenses: expenses, currentPage: 'expenses' });
     } catch (err) {
         res.status(500).send(err);
     }
@@ -188,13 +188,13 @@ app.put('/expenses/:id', async (req, res) => {
     }
 });
 
-app.get('/profile', function(req, res) {
+app.get('/profile', function (req, res) {
     if (!req.session.userId) {
         return res.redirect('/login');
     }
     User.findById(req.session.userId)
         .then(user => {
-            res.render('profile', { user: user, currentPage: 'profile'});
+            res.render('profile', { user: user, currentPage: 'profile' });
         })
         .catch(err => {
             console.log(err);
@@ -211,6 +211,17 @@ app.post('/profile/picture', upload.single('profilePicture'), async (req, res) =
     } catch {
         res.redirect('/profile');
     }
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('/');
+        }
+
+        res.clearCookie('connect.sid');
+        res.redirect('/login');
+    });
 });
 
 app.use('/uploads', express.static('uploads'));
