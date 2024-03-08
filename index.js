@@ -8,7 +8,7 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 80;
 
 const app = express();
 
