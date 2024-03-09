@@ -7,47 +7,61 @@
 </head>
 
 <body>
-    <div class="center-div">
+    <div class="edit-center-div">
         <h1>Edit Expense</h1>
         <form action="/expenses/<%= expense._id %>?_method=PUT" method="POST">
             <input placeholder="Purchase" type="text" id="name" name="name" value="<%= expense.name %>"><br>
-            <select name="transactionType" id="transactionType">
+            <select name="transactionType" id="transactionType" onchange="changeTypeOptions()">
                 <option value="credit" <%=expense.transactionType==='credit' ? 'selected' : '' %>>Credit</option>
                 <option value="debit" <%=expense.transactionType==='debit' ? 'selected' : '' %>>Debit</option>
             </select><br>
-            <% if (expense.transactionType==='credit' ) { %>
-                <select name="type" id="type">
-                    <option value="" disabled>Select Source</option>
-                    <option value="salary" <%=expense.type==='salary' ? 'selected' : '' %>>Salary</option>
-                    <option value="gift" <%=expense.type==='gift' ? 'selected' : '' %>>Gift</option>
-                    <option value="investment" <%=expense.type==='investment' ? 'selected' : '' %>>Investment</option>
-                    <option value="freelance" <%=expense.type==='freelance' ? 'selected' : '' %>>Freelance</option>
-                </select>
-                <% } else { %>
-                    <select name="type" id="type">
-                        <option value="" disabled>Select Category</option>
-                        <option value="Groceries/Food" <%=expense.type==='Groceries/Food' ? 'selected' : '' %>
-                            >Groceries/Food</option>
-                        <option value="Housing" <%=expense.type==='Housing' ? 'selected' : '' %>>Housing</option>
-                        <option value="Utilities" <%=expense.type==='Utilities' ? 'selected' : '' %>>Utilities</option>
-                        <option value="Transportation" <%=expense.type==='Transportation' ? 'selected' : '' %>
-                            >Transportation</option>
-                        <option value="Health" <%=expense.type==='Health' ? 'selected' : '' %>>Health</option>
-                        <option value="Personal" <%=expense.type==='Personal' ? 'selected' : '' %>>Personal</option>
-                        <option value="Entertainment" <%=expense.type==='Entertainment' ? 'selected' : '' %>
-                            >Entertainment</option>
-                        <option value="Dining Out" <%=expense.type==='Dining Out' ? 'selected' : '' %>>Dining Out
-                        </option>
-                        <option value="Education" <%=expense.type==='Education' ? 'selected' : '' %>>Education</option>
-                        <option value="Savings/Investments" <%=expense.type==='Savings/Investments' ? 'selected' : '' %>
-                            >Savings/Investments</option>
-                    </select>
-                    <% } %>
-                        <input placeholder="Amount (KWD)" type="number" id="amount" name="amount" step="any"
-                            value="<%= expense.amount %>"><br>
-                        <input type="submit" value="Submit">
+            <select name="type" id="type">
+                <!-- Options will be added here by JavaScript -->
+            </select>
+            <input placeholder="Amount (KWD)" type="number" id="amount" name="amount" step="any"
+                value="<%= expense.amount %>"><br>
+            <input type="submit" value="Submit">
         </form>
     </div>
+    <script>
+        function changeTypeOptions() {
+            var transactionType = document.getElementById('transactionType').value;
+            var typeSelect = document.getElementById('type');
+            var creditOptions = [
+                { text: 'Select Source', value: '', disabled: true },
+                { text: 'Salary', value: 'salary' },
+                { text: 'Gift', value: 'gift' },
+                { text: 'Investment', value: 'investment' },
+                { text: 'Freelance', value: 'freelance' }
+            ];
+            var debitOptions = [
+                { text: 'Select Category', value: '', disabled: true },
+                { text: 'Groceries/Food', value: 'Groceries/Food' },
+                { text: 'Housing', value: 'Housing' },
+                { text: 'Utilities', value: 'Utilities' },
+                { text: 'Transportation', value: 'Transportation' },
+                { text: 'Health', value: 'Health' },
+                { text: 'Personal', value: 'Personal' },
+                { text: 'Entertainment', value: 'Entertainment' },
+                { text: 'Dining Out', value: 'Dining Out' },
+                { text: 'Education', value: 'Education' },
+                { text: 'Savings/Investments', value: 'Savings/Investments' }
+            ];
+            var options = transactionType === 'credit' ? creditOptions : debitOptions;
+            typeSelect.innerHTML = '';
+            options.forEach(function (option) {
+                var optionElement = document.createElement('option');
+                optionElement.text = option.text;
+                optionElement.value = option.value;
+                if (option.disabled) {
+                    optionElement.disabled = true;
+                }
+                typeSelect.add(optionElement);
+            });
+        }
+        // Call changeTypeOptions on page load to populate the "type" select box with the correct options
+        window.onload = changeTypeOptions;
+    </script>
 </body>
 
 </html>

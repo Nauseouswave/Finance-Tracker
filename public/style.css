@@ -4,14 +4,32 @@ body {
     padding: 0;
     background-color: #0B1416;
     color: #fff;
-    height: 90vh;
+    height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #1a1a1a;
 }
 
 .center-div {
+    flex-grow: 1;
+    background-color: #353535;
+    width: 40%;
+    min-height: 50%;
+    max-height: 90%;
+    margin: 0 auto;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-radius: 10px;
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.edit-center-div {
     background-color: #353535;
     width: 40%;
     min-height: 50%;
@@ -25,7 +43,8 @@ body {
     position: relative;
 }
 
-.center-div h1 {
+.center-div h1,
+.edit-center-div h1 {
     text-align: center;
     color: #00ff15;
     font-size: 2em;
@@ -139,7 +158,7 @@ input::placeholder {
 }
 
 #buttonContainer {
-    position: absolute;
+    position: fixed;
     right: 0;
     bottom: 0;
     display: flex;

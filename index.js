@@ -152,6 +152,7 @@ app.get('/expenses/:id/edit', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
 app.put('/expenses/:id', async (req, res) => {
     try {
         const { name, type, amount, transactionType } = req.body;
