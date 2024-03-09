@@ -11,26 +11,41 @@
         <h1>Edit Expense</h1>
         <form action="/expenses/<%= expense._id %>?_method=PUT" method="POST">
             <input placeholder="Purchase" type="text" id="name" name="name" value="<%= expense.name %>"><br>
-            <select name="type" id="type">
-                <option value="" disabled>Select Category</option>
-                <option value="Groceries/Food" <%=expense.type==='Groceries/Food' ? 'selected' : '' %>>Groceries/Food
-                </option>
-                <option value="Housing" <%=expense.type==='Housing' ? 'selected' : '' %>>Housing</option>
-                <option value="Utilities" <%=expense.type==='Utilities' ? 'selected' : '' %>>Utilities</option>
-                <option value="Transportation" <%=expense.type==='Transportation' ? 'selected' : '' %>>Transportation
-                </option>
-                <option value="Health" <%=expense.type==='Health' ? 'selected' : '' %>>Health</option>
-                <option value="Personal" <%=expense.type==='Personal' ? 'selected' : '' %>>Personal</option>
-                <option value="Entertainment" <%=expense.type==='Entertainment' ? 'selected' : '' %>>Entertainment
-                </option>
-                <option value="Dining Out" <%=expense.type==='Dining Out' ? 'selected' : '' %>>Dining Out</option>
-                <option value="Education" <%=expense.type==='Education' ? 'selected' : '' %>>Education</option>
-                <option value="Savings/Investments" <%=expense.type==='Savings/Investments' ? 'selected' : '' %>
-                    >Savings/Investments</option>
-            </select>
-            <input placeholder="Amount (KWD)" type="number" id="amount" name="amount" step="any"
-                value="<%= expense.amount %>"><br>
-            <input type="submit" value="Submit">
+            <select name="transactionType" id="transactionType">
+                <option value="credit" <%=expense.transactionType==='credit' ? 'selected' : '' %>>Credit</option>
+                <option value="debit" <%=expense.transactionType==='debit' ? 'selected' : '' %>>Debit</option>
+            </select><br>
+            <% if (expense.transactionType==='credit' ) { %>
+                <select name="type" id="type">
+                    <option value="" disabled>Select Source</option>
+                    <option value="salary" <%=expense.type==='salary' ? 'selected' : '' %>>Salary</option>
+                    <option value="gift" <%=expense.type==='gift' ? 'selected' : '' %>>Gift</option>
+                    <option value="investment" <%=expense.type==='investment' ? 'selected' : '' %>>Investment</option>
+                    <option value="freelance" <%=expense.type==='freelance' ? 'selected' : '' %>>Freelance</option>
+                </select>
+                <% } else { %>
+                    <select name="type" id="type">
+                        <option value="" disabled>Select Category</option>
+                        <option value="Groceries/Food" <%=expense.type==='Groceries/Food' ? 'selected' : '' %>
+                            >Groceries/Food</option>
+                        <option value="Housing" <%=expense.type==='Housing' ? 'selected' : '' %>>Housing</option>
+                        <option value="Utilities" <%=expense.type==='Utilities' ? 'selected' : '' %>>Utilities</option>
+                        <option value="Transportation" <%=expense.type==='Transportation' ? 'selected' : '' %>
+                            >Transportation</option>
+                        <option value="Health" <%=expense.type==='Health' ? 'selected' : '' %>>Health</option>
+                        <option value="Personal" <%=expense.type==='Personal' ? 'selected' : '' %>>Personal</option>
+                        <option value="Entertainment" <%=expense.type==='Entertainment' ? 'selected' : '' %>
+                            >Entertainment</option>
+                        <option value="Dining Out" <%=expense.type==='Dining Out' ? 'selected' : '' %>>Dining Out
+                        </option>
+                        <option value="Education" <%=expense.type==='Education' ? 'selected' : '' %>>Education</option>
+                        <option value="Savings/Investments" <%=expense.type==='Savings/Investments' ? 'selected' : '' %>
+                            >Savings/Investments</option>
+                    </select>
+                    <% } %>
+                        <input placeholder="Amount (KWD)" type="number" id="amount" name="amount" step="any"
+                            value="<%= expense.amount %>"><br>
+                        <input type="submit" value="Submit">
         </form>
     </div>
 </body>

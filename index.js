@@ -120,11 +120,12 @@ app.post('/expenses', async (req, res) => {
         return res.redirect('/login');
     }
 
+    const type = req.body.transactionType === 'credit' ? req.body.source : req.body.type;
     const name = req.body.transactionType === 'credit' ? req.body.creditName : req.body.debitName;
 
     try {
-        // Create a new expense with the request body, user ID, and name
-        const expense = new Expense({ ...req.body, name, userId: req.session.userId });
+        // Create a new expense with the request body, user ID, name, and type
+        const expense = new Expense({ ...req.body, name, type, userId: req.session.userId });
         await expense.save();
 
         // Find the user and update their balance
@@ -151,18 +152,34 @@ app.get('/expenses/:id/edit', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
-
 app.put('/expenses/:id', async (req, res) => {
     try {
-        const { name, type, amount } = req.body;
-        await Expense.findByIdAndUpdate(req.params.id, { name, type, amount });
+        const { name, type, amount, transactionType } = req.body;
+        const expense = await Expense.findById(req.params.id);
+        const user = await User.findById(req.session.userId);
+
+        let balanceChange = 0;
+        if (expense.transactionType !== transactionType) {
+            if (transactionType === 'debit') {
+                balanceChange = -2 * expense.amount;
+            } else {
+                balanceChange = 2 * expense.amount;
+            }
+        } else if (expense.amount !== amount) {
+            balanceChange = expense.transactionType === 'debit' ? expense.amount - amount : amount - expense.amount;
+        }
+
+        user.balance += balanceChange;
+        await user.save();
+
+        await Expense.findByIdAndUpdate(req.params.id, { name, type, amount, transactionType });
+
         res.redirect('/expenses');
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
     }
 });
-
 app.get('/profile', function (req, res) {
     if (!req.session.userId) {
         return res.redirect('/login');
@@ -228,6 +245,23 @@ app.delete('/expenses/:id', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');
+    }
+});
+
+app.get('/dashboard', async (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/login');
+    }
+
+    try {
+        const user = await User.findById(req.session.userId);
+        const recentExpenses = await Expense.find({ userId: req.session.userId })
+            .sort({ date: -1 }) // sort by date in descending order
+            .limit(5); // limit the result to 5
+        res.render('dashboard', { user: user, expenses: recentExpenses });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
     }
 });
 

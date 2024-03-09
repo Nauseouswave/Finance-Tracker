@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <h1>Welcome, <%= user.name %>
+    </h1>
+    <h2>Your Recent Expenses</h2>
+    <ul>
+        <% expenses.forEach(expense=> { %>
+            <li>
+                <%= expense.name %>: <%= expense.amount %>
+            </li>
+            <% }); %>
+    </ul>
+</body>
+
+</html>
