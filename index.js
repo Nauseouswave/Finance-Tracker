@@ -259,7 +259,7 @@ app.get('/dashboard', async (req, res) => {
         const recentExpenses = await Expense.find({ userId: req.session.userId })
             .sort({ date: -1 }) // sort by date in descending order
             .limit(5); // limit the result to 5
-        res.render('dashboard', { user: user, expenses: recentExpenses });
+        res.render('dashboard', { user: user, expenses: recentExpenses, currentPage: 'dashboard' });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');

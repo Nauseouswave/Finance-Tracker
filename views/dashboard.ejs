@@ -1,21 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
-<body>
-    <h1>Welcome, <%= user.name %>
-    </h1>
-    <h2>Your Recent Expenses</h2>
-    <ul>
-        <% expenses.forEach(expense=> { %>
-            <li>
-                <%= expense.name %>: <%= expense.amount %>
-            </li>
-            <% }); %>
-    </ul>
+<body style="padding-top: 70px;">
+    <%- include('navbar.ejs', {currentPage: currentPage}) %>
+
+        <div class="container">
+            <h1 class="my-4">Expense Dashboard</h1>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Balance</h5>
+                            <p class="card-text display-4" id="balance" style="color: #2c3e50; font-weight: bold;">
+                                KWD <%= user.balance %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more cards for other statistics here -->
+            </div>
+        </div>
+
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
