@@ -91,7 +91,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register');
+    res.render('register', { user: req.user, currentPage: 'register' });
 });
 
 app.get('/login', (req, res) => {
@@ -217,13 +217,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.use((req, res, next) => {
-    if (!req.session.userId) {
-        return res.status(401).send('User not authenticated');
-    }
-    next();
-});
-
 app.delete('/expenses/:id', async (req, res) => {
     console.log('Deleting expense with ID:', req.params.id);
     try {
@@ -251,6 +244,7 @@ app.delete('/expenses/:id', async (req, res) => {
 
 app.get('/dashboard', async (req, res) => {
     if (!req.session.userId) {
+        req.session.message = 'You need to log in to view the Dashboard';
         return res.redirect('/login');
     }
 

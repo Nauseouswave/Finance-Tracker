@@ -6,16 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.7);
+        }
+
+        .container h1 {
+            color: #343a40;
+        }
+    </style>
 </head>
 
 <body style="padding-top: 70px;">
     <%- include('navbar.ejs', {currentPage: currentPage}) %>
 
         <div class="container">
-            <h1 class="my-4">Expense Dashboard</h1>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
+            <h1 class="my-4 text-center" style="color: #00ff15;">Expense Dashboard</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card mx-auto" style="width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">Balance</h5>
                             <p class="card-text display-4" id="balance" style="color: #2c3e50; font-weight: bold;">
@@ -24,11 +38,16 @@
                         </div>
                     </div>
                 </div>
-                <canvas id="myChart"></canvas>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card mx-auto" style="width: 30rem;">
+                        <div class="card-body">
+                            <canvas id="myChart" width="400" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
                 <!-- Add more cards for other statistics here -->
             </div>
         </div>
-
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
