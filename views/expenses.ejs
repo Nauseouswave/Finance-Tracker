@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Expenses</title>
     <link rel="stylesheet" href="/style.css">
@@ -7,110 +8,196 @@
 
 <body>
     <%- include('navbar.ejs', {currentPage: currentPage}) %>
-    <div class="center-div">
-        <h1>Expenses</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Amount (KWD)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% expenses.forEach(expense => { %>
-                    <tr data-id="<%= expense._id %>">
-                        <td><%= expense.name %></td>
-                        <td><%= expense.type %></td>
-                        <td>KWD <%= expense.amount %></td>
+        <div class="center-div">
+            <div class="balance">
+                <h2>Balance: KWD <%= user.balance %>
+                </h2>
+            </div>
+            <h1>Expenses</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Amount (KWD)</th>
+                        <th>Transaction Type</th>
                     </tr>
-                <% }); %>
-            </tbody>
-        </table>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <form action="/expenses" method="POST">
-                    <input type="text" name="name" placeholder="Purchase">
-                    <select name="type">
-                        <option value="" selected disabled>Select Category</option>
-                        <option value="Groceries/Food">Groceries/Food</option>
-                        <option value="Housing">Housing</option>
-                        <option value="Utilities">Utilities</option>
-                        <option value="Transportation">Transportation</option>
-                        <option value="Health">Health</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Dining Out">Dining Out</option>
-                        <option value="Education">Education</option>
-                        <option value="Savings/Investments">Savings/Investments</option>
-                    </select>
-                    <input type="number" name="amount" placeholder="Amount (KWD)" step="any">
-                    <input type="submit">
-                </form>
+                </thead>
+                <tbody>
+                    <% expenses.forEach(expense=> { %>
+                        <tr data-id="<%= expense._id %>">
+                            <td>
+                                <%= new Date(expense.date).toLocaleDateString() %>
+                            </td>
+                            <td>
+                                <%= expense.name %>
+                            </td>
+                            <td>
+                                <%= expense.type %>
+                            </td>
+                            <td>KWD <%= expense.amount %>
+                            </td>
+                            <td>
+                                <%= expense.transactionType %>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form action="/expenses" method="POST">
+                        <select name="transactionType" id="transactionType" required>
+                            <option value="">Select transaction type</option>
+                            <option value="credit">Credit</option>
+                            <option value="debit">Debit</option>
+                        </select>
+
+                        <div id="creditFields" style="display: none;">
+                            <input type="text" name="creditName" id="creditName" placeholder="Name">
+                            <select name="source" id="source">
+                                <option value="">Select Source</option>
+                                <option value="salary">Salary</option>
+                                <option value="gift">Gift</option>
+                                <option value="investment">Investment</option>
+                                <option value="freelance">Freelance</option>
+                            </select>
+                        </div>
+
+                        <div id="debitFields" style="display: none;">
+                            <input type="text" name="debitName" id="debitName" placeholder="Name">
+                            <select name="type" id="type">
+                                <option value="" selected disabled>Select Category</option>
+                                <option value="Groceries/Food">Groceries/Food</option>
+                                <option value="Housing">Housing</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Health">Health</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Dining Out">Dining Out</option>
+                                <option value="Education">Education</option>
+                                <option value="Savings/Investments">Savings/Investments</option>
+                            </select>
+                        </div>
+
+                        <input type="number" name="amount" id="amount" placeholder="Amount (KWD)" step="any"
+                            style="display: none;">
+                        <input type="submit">
+                    </form>
+                </div>
+            </div>
+            <div id="buttonContainer">
+                <button id="editButton" style="display: none;">Edit</button>
+                <button id="deleteButton" style="display: none;">Delete</button>
+                <button id="addButton">Add Expense</button>
             </div>
         </div>
-        <div id="buttonContainer">
-            <button id="editButton" style="display: none;">Edit</button>
-            <button id="deleteButton" style="display: none;">Delete</button>
-            <button id="addButton">Add Expense</button>
-        </div>
-    </div>
 
-    <script>
-        let selectedRow;
+        <script>
+            let selectedRow;
 
-        document.querySelectorAll('tr[data-id]').forEach(row => {
-            row.addEventListener('click', () => {
-                selectedRow = row;
-                document.getElementById('editButton').style.display = 'block';
-                document.getElementById('deleteButton').style.display = 'block';
-            });
-        });
-
-        document.getElementById('editButton').addEventListener('click', () => {
-            const selectedId = selectedRow.getAttribute('data-id');
-            window.location.href = '/expenses/' + selectedId + '/edit';
-        });
-
-        document.getElementById('deleteButton').addEventListener('click', () => {
-            const selectedId = selectedRow.getAttribute('data-id');
-            fetch('/expenses/' + selectedId, {
-                method: 'DELETE',
-            }).then(response => {
-                if (response.ok) {
-                    selectedRow.remove();
-                    document.getElementById('editButton').style.display = 'none';
-                    document.getElementById('deleteButton').style.display = 'none';
-                } else {
-                    throw new Error('Failed to delete expense');
-                }
-            }).catch(error => {
-                console.error(error);
+            document.querySelectorAll('tr[data-id]').forEach(row => {
+                row.addEventListener('click', () => {
+                    selectedRow = row;
+                    document.getElementById('editButton').style.display = 'block';
+                    document.getElementById('deleteButton').style.display = 'block';
+                });
             });
 
-            location.reload();
-        });
+            document.getElementById('editButton').addEventListener('click', () => {
+                const selectedId = selectedRow.getAttribute('data-id');
+                window.location.href = '/expenses/' + selectedId + '/edit';
+            });
 
-        var modal = document.getElementById("myModal");
-        var btn = document.getElementById("addButton");
-        var span = document.getElementsByClassName("close")[0];
+            document.getElementById('deleteButton').addEventListener('click', () => {
+                const selectedId = selectedRow.getAttribute('data-id');
+                fetch('/expenses/' + selectedId, {
+                    method: 'DELETE',
+                }).then(response => {
+                    if (response.ok) {
+                        selectedRow.remove();
+                        document.getElementById('editButton').style.display = 'none';
+                        document.getElementById('deleteButton').style.display = 'none';
+                        location.reload();
+                    } else {
+                        throw new Error('Failed to delete expense');
+                    }
+                }).catch(error => {
+                    console.error(error);
+                });
+            });
 
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
+            var modal = document.getElementById("myModal");
+            var btn = document.getElementById("addButton");
+            var span = document.getElementsByClassName("close")[0];
 
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
 
-        window.onclick = function(event) {
-            if (event.target == modal) {
+            span.onclick = function () {
                 modal.style.display = "none";
             }
-        }
-    </script>
-    
-    
+
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            document.getElementById('transactionType').addEventListener('change', function () {
+                const transactionType = this.value;
+                document.getElementById('amount').style.display = transactionType ? 'block' : 'none';
+                document.getElementById('creditFields').style.display = transactionType === 'credit' ? 'block' : 'none';
+                document.getElementById('debitFields').style.display = transactionType === 'debit' ? 'block' : 'none';
+            });
+        </script>
+
+
+        <style>
+            input[type="text"],
+            select {
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+            input[type="submit"] {
+                width: 100%;
+                background-color: #4CAF50;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #45a049;
+            }
+
+            .balance {
+                background-color: rgb(85, 85, 85);
+                font-size: 24px;
+                font-weight: bold;
+                color: #4CAF50;
+                text-align: center;
+                margin: 20px auto;
+                padding: 10px;
+                border: 2px solid #4CAF50;
+                border-radius: 5px;
+                width: 50%;
+                max-width: 600px;
+            }
+        </style>
 </body>
+
 </html>

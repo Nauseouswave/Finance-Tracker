@@ -8,9 +8,13 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-const port = process.env.PORT || 80;
-
 const app = express();
+const port = process.env.PORT || 3000;
+
+
+/** Local Imports */
+const Expense = require('./models/Expense');
+const User = require('./models/User');
 
 app.use(session({
     secret: 'some secret',
@@ -30,29 +34,6 @@ app.use(methodOverride('_method'));
 
 mongoose.connect('mongodb://localhost/finance_tracker');
 
-const userSchema = new mongoose.Schema({
-    username: String,
-    password: String,
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    joinDate: {
-        type: Date,
-        default: Date.now
-    },
-    profilePicture: {
-        type: String,
-        default: '/images/default-profile.jpg'
-    }
-});
-
-const User = mongoose.model('User', userSchema);
-
 app.get('/', function (req, res) {
     User.findById(req.session.userId)
         .then(user => {
@@ -69,15 +50,6 @@ app.get('/', function (req, res) {
 app.listen(port, function () {
     console.log('App is running on http://localhost:' + port);
 });
-
-const expenseSchema = new mongoose.Schema({
-    name: String,
-    type: String,
-    amount: Number,
-    userId: mongoose.Schema.Types.ObjectId,
-});
-
-const Expense = mongoose.model('Expense', expenseSchema);
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -137,7 +109,7 @@ app.get('/expenses', async (req, res) => {
     try {
         const expenses = await Expense.find({ userId: req.session.userId });
         const user = await User.findById(req.session.userId);
-        res.render('expenses', { user: user, expenses: expenses, currentPage: 'expenses' });
+        res.render('expenses', { user: user, expenses: expenses, currentPage: 'expenses', balance: user.balance });
     } catch (err) {
         res.status(500).send(err);
     }
@@ -148,21 +120,24 @@ app.post('/expenses', async (req, res) => {
         return res.redirect('/login');
     }
 
-    try {
-        const expense = new Expense({ ...req.body, userId: req.session.userId });
-        await expense.save();
-        res.redirect('/expenses');
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
+    const name = req.body.transactionType === 'credit' ? req.body.creditName : req.body.debitName;
 
-app.delete('/expenses/:id', async (req, res) => {
     try {
-        await Expense.findByIdAndDelete(req.params.id);
+        // Create a new expense with the request body, user ID, and name
+        const expense = new Expense({ ...req.body, name, userId: req.session.userId });
+        await expense.save();
+
+        // Find the user and update their balance
+        const user = await User.findById(req.session.userId);
+        if (expense.transactionType === 'credit') {
+            user.balance += expense.amount;
+        } else if (expense.transactionType === 'debit') {
+            user.balance -= expense.amount;
+        }
+        await user.save();
+
         res.redirect('/expenses');
     } catch (err) {
-        console.error(err);
         res.status(500).send(err);
     }
 });
@@ -222,6 +197,38 @@ app.get('/logout', (req, res) => {
         res.clearCookie('connect.sid');
         res.redirect('/login');
     });
+});
+
+app.use((req, res, next) => {
+    if (!req.session.userId) {
+        return res.status(401).send('User not authenticated');
+    }
+    next();
+});
+
+app.delete('/expenses/:id', async (req, res) => {
+    console.log('Deleting expense with ID:', req.params.id);
+    try {
+        const expense = await Expense.findById(req.params.id);
+        if (!expense) return res.status(404).send();
+        console.log('transactionType:', expense.transactionType);
+        console.log('amount type:', typeof expense.amount);
+
+        const user = await User.findById(req.session.userId).catch(console.error);
+        if (!user) return res.status(404).send('User not found');
+        if (expense.transactionType === 'credit') {
+            user.balance -= expense.amount;
+        } else if (expense.transactionType === 'debit') {
+            user.balance += expense.amount;
+        }
+        await user.save();
+
+        await Expense.findByIdAndDelete(req.params.id).catch(console.error);
+        res.status(200).send();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
 });
 
 app.use('/uploads', express.static('uploads'));
